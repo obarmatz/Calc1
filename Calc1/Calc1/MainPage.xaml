@@ -27,11 +27,9 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <ScrollView>
-                <Label x:Name="Res"  HeightRequest="200" FontSize="70" VerticalTextAlignment="End" VerticalOptions="EndAndExpand" HorizontalOptions="End" Margin="20" TextColor="Black"/>
-            </ScrollView>
+            <Label x:Name="Res"  HeightRequest="200" FontSize="70" VerticalTextAlignment="End" VerticalOptions="EndAndExpand" HorizontalOptions="End" Margin="20" TextColor="Black"/>
 
-            <Grid HeightRequest="700" VerticalOptions="End" RowSpacing="1" ColumnSpacing="1">
+                <Grid HeightRequest="700" VerticalOptions="End" RowSpacing="1" ColumnSpacing="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
