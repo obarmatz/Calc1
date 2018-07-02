@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Calculator
+namespace Calc1
 {
     public partial class MainPage : ContentPage
     {
