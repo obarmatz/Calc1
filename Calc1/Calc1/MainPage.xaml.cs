@@ -22,7 +22,6 @@ namespace Calc1
 
             switch (Button_Text)
             {
-
                 case "C":
                     Set_Res("0");
                     break;
@@ -107,12 +106,13 @@ namespace Calc1
             Set_Res("Syntax Error");
         }
 
+        //devides the Res string to make a logical statement, the calls Calculate
         private void Analize_Content(String r)
         {
             IList v = new List<String>();
             int numLength = 1;
             int start = 0;
-            for (int i = 0; i < r.Length + 1; i++)//devide the Res string to make a logical statement
+            for (int i = 0; i < r.Length + 1; i++)
             {
                 if (start + numLength > r.Length)//in case of deviation from the string, add the remaiming to v
                 {
@@ -134,6 +134,7 @@ namespace Calc1
             Calculate(v);
         }
 
+        //takes the logicaly orgenized list and calculates the result
         private void Calculate(IList v)
         {
             for (int i = 1; i < v.Count; i++)
@@ -160,7 +161,6 @@ namespace Calc1
                         Set_Res((int.Parse(v[i - 1] as String) * int.Parse(v[i + 1] as String)).ToString());
                         break;
                 }
-
             }
         }
     }
