@@ -131,10 +131,36 @@ namespace Calc1
                     start = i + 1;
                 }
             }
+            Calculate(v);
+        }
 
+        private void Calculate(IList v)
+        {
             for (int i = 1; i < v.Count; i++)
             {
-                if (v[i] as String == "^") Set_Res(Math.Pow(int.Parse(v[i - 1] as String), int.Parse(v[i + 1] as String)).ToString());
+                switch(v[i] as String)
+                {
+                    case "^":
+                        Set_Res(Math.Pow(int.Parse(v[i - 1] as String), int.Parse(v[i + 1] as String)).ToString());
+                        break;
+
+                    case "+":
+                        Set_Res((int.Parse(v[i - 1] as String) + int.Parse(v[i + 1] as String)).ToString());
+                        break;
+
+                    case "-":
+                        Set_Res((int.Parse(v[i - 1] as String) - int.Parse(v[i + 1] as String)).ToString());
+                        break;
+
+                    case "/":
+                        Set_Res((int.Parse(v[i - 1] as String) / int.Parse(v[i + 1] as String)).ToString());
+                        break;
+
+                    case "X":
+                        Set_Res((int.Parse(v[i - 1] as String) * int.Parse(v[i + 1] as String)).ToString());
+                        break;
+                }
+
             }
         }
     }
