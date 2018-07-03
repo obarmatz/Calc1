@@ -15,13 +15,16 @@ namespace Calc1
             InitializeComponent();
             Set_Res("0");
         }
-
+        
         private void Button_Clicked(object sender, EventArgs e)
         {
             String Button_Text = (sender as Button).Text;
 
             switch (Button_Text)
             {
+                case "⇋":
+                    Navigation.PushAsync(new Cchange());
+                    break;
                 case "C":
                     Set_Res("0");
                     break;
