@@ -42,7 +42,4 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)currency.xml" />
-  </ItemGroup>
 </Project>

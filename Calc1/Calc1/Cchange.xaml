@@ -32,9 +32,9 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Text="0" x:Name="From" TextColor="Black" FontSize="50" HorizontalTextAlignment="End"/>
-                <Picker x:Name="FromType" TextColor="Black" Grid.Column="1" FontSize="55"/>
+                <Picker x:Name="FromType" SelectedIndexChanged="Type_SelectedIndexChanged" TextColor="Black" Grid.Column="1" FontSize="55"/>
                 <Label Text="0" x:Name="To" Grid.Row="1" TextColor="Black" FontSize="50" HorizontalTextAlignment="End"/>
-                <Picker x:Name="ToType" Grid.Row="1" Grid.Column="1" TextColor="Black" FontSize="55"/>
+                <Picker x:Name="ToType" SelectedIndexChanged="Type_SelectedIndexChanged" Grid.Row="1" Grid.Column="1" TextColor="Black" FontSize="55"/>
 
             </Grid>
 
