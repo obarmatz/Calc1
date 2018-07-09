@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
+using Plugin.FilePicker;
+using Plugin.FilePicker.Abstractions;
 
 namespace Calc1
 {
@@ -22,6 +21,9 @@ namespace Calc1
 
             switch (Button_Text)
             {
+                case "X=3":
+                    Pick_File();
+                    break;
                 case "⇋":
                     Navigation.PushAsync(new Cchange());
                     break;
@@ -108,8 +110,12 @@ namespace Calc1
         {
             Set_Res("Syntax Error");
         }
+        private void Display_File_Fault_Error_Message()
+        {
+            Set_Res("File syntax error!");
+        }
 
-        //devides the Res string to make a logical statement, the calls Calculate
+        //devides the Res string to make a logical statement, then calls Calculate
         private void Analize_Content(String r)
         {
             IList v = new List<String>();
@@ -165,6 +171,133 @@ namespace Calc1
                         break;
                 }
             }
+        }
+
+        private Double SolveEq(String eq)
+        {
+            //1)devide to 2 strings
+            String Right = "";
+            String Left = "";
+            for (int i = 0; i < eq.Length - 1; i++)
+            {
+                if (eq[i] == '=')
+                {
+                    Right = eq.Substring(0, i);
+                    Left = eq.Substring(i + 1);
+                    break;
+                }
+            }
+
+            //2)devide to arrays
+            int digits = 1;
+            int start = 0;
+            List<String> RightArr = new List<string>();
+            for (int i = 1; i < Right.Length; i++)
+            {
+                if (!Char.IsDigit(Right, i) && Right[i] != 'X')
+                {
+                    RightArr.Add(Right.Substring(start, digits));
+                    start = i;
+                    if (Right[i] == '+') start++;
+                    digits = 0;
+                    if (Right[i] == '-') digits++;
+                }
+                else digits++;
+            }
+            RightArr.Add(Right.Substring(start));
+
+            List<String> LeftArr = new List<string>();
+            digits = 1;
+            start = 0;
+            for (int i = 1; i < Left.Length; i++)
+            {
+                if (Left[i] == '+' || Left[i] == '-')
+                {
+                    LeftArr.Add(Left.Substring(start, digits));
+                    start = i;
+                    if (Left[i] == '+') start++;
+                    digits = 0;
+                    if (Left[i] == '-') digits++;
+                }
+                else digits++;
+            }
+            LeftArr.Add(Left.Substring(start));
+
+            //3)devide numbers and Xs
+            List<string> RightArrX = new List<string>();
+            List<string> RightArrNum = new List<string>();
+            List<string> LeftArrX = new List<string>();
+            List<string> LeftArrNum = new List<string>();
+
+            foreach (string s in RightArr)
+            {
+                if (s[s.Length - 1] == 'X') RightArrX.Add(s);
+                else RightArrNum.Add(s);
+            }
+
+            foreach (string s in LeftArr)
+            {
+                if (s[s.Length - 1] == 'X') LeftArrX.Add(s);
+                else LeftArrNum.Add(s);
+            }
+
+            //4)turn string array into a number (sum the arrays)
+            Double RightX = 0;
+            Double RightNum = 0;
+            Double LeftX = 0;
+            Double LeftNum = 0;
+
+            foreach (String s in RightArrX)
+            {
+                if (s.Equals("X")) RightX++;//because if we short the X we are left with nothing, as it is common to not write 1X 
+                else RightX += Double.Parse(s.Substring(0, s.Length - 1));//because the last char is X
+            }
+            foreach (String s in RightArrNum)
+            {
+                RightNum += Double.Parse(s);
+            }
+            foreach (String s in LeftArrX)
+            {
+                if (s.Equals("X")) LeftX++;
+                LeftX += Double.Parse(s.Substring(0, s.Length - 1));
+            }
+            foreach (String s in LeftArrNum)
+            {
+                LeftNum += Double.Parse(s);
+            }
+
+            //5)X to the right num to the left
+            Double X = RightX - LeftX;
+            Double Num = LeftNum - RightNum;
+
+            //6)devide num in X
+            Double Ans = Num / X;
+            return Ans;
+        }
+
+        private void Pick_File()
+        {
+            string contents = "X+15-2X=32-75+4X-7";
+            //FileData file;
+            //Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            //file = await CrossFilePicker.Current.PickFile();
+                
+            //Console.WriteLine("`````````````````````````````````````````````````````````````````````");
+            //contents = System.Text.Encoding.UTF8.GetString(file.DataArray);
+            //Console.WriteLine(contents+"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            
+
+            Double eqAns = 0;
+            //try
+            //{
+                eqAns = SolveEq(contents);
+            //}
+            //catch (Exception ex)
+            //{
+                //Display_File_Fault_Error_Message();
+                //Console.WriteLine(ex.Source);
+            //}
+            Set_Res(eqAns.ToString());
         }
     }
 }

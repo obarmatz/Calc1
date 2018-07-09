@@ -47,6 +47,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Clicked="Button_Clicked" Text="⇋" Grid.Column="0" Grid.Row="0" FontAttributes="Bold" TextColor="Black" FontSize="45" BackgroundColor="GhostWhite"/>
+                <Button Clicked="Button_Clicked" Text="X=3" Grid.Column="1" Grid.Row="0" TextColor="Black" FontSize="30" BackgroundColor="GhostWhite"/>
                 <Button Clicked="Button_Clicked" Text="DEL" Grid.Column="3" Grid.Row="0" TextColor="BlueViolet" FontSize="25" BackgroundColor="GhostWhite"/>
                 <Button Clicked="Button_Clicked" Text="C" FontSize="31" FontAttributes="Bold" BackgroundColor="White" TextColor="Red" Grid.Row="1"/>
                 <Button Clicked="Button_Clicked" Style="{StaticResource Action}" Text="( )" Grid.Column="1" Grid.Row="1"/>

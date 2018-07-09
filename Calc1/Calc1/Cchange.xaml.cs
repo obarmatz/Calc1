@@ -1,9 +1,7 @@
 using System;
-using System.Net;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace Calc1
 {
