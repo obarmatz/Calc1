@@ -40,6 +40,7 @@ namespace Calc1
                     Set_Res(Get_Res() + "^");
                     break;
                 case "( )":
+					Put_Parenthesis();
                     break;
                 case "/":
                     Set_Res(Get_Res() + "/");
@@ -57,7 +58,9 @@ namespace Calc1
                     Set_Res(Get_Res() + ".");
                     break;
                 case "=":
-                    Analize_Content(Get_Res());
+					//Analize_Content(Get_Res());
+					Console.WriteLine(Get_Res());
+					Set_Res(CalculateBinTree(new BinTree<object>(Get_Res())).ToString());
                     break;
                 case "1":
                     Set_Res((Get_Res() == "0") ? "1" : (Get_Res() + "1"));
@@ -92,7 +95,15 @@ namespace Calc1
             }
         }
 
-        private void Set_Res(String s)
+		/// <summary>
+		///decides whether to put '(' or ')'
+		/// </summary>
+		private void Put_Parenthesis()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void Set_Res(String s)
         {
             Label res = this.FindByName<Label>("Res");
             res.Text = s;
@@ -113,63 +124,23 @@ namespace Calc1
             Set_Res("File syntax error!");
         }
 
-        //devides the Res string to make a logical statement, then calls Calculate
-        private void Analize_Content(String r)
-        {
-            IList v = new List<String>();
-            int numLength = 1;
-            int start = 0;
-            for (int i = 0; i < r.Length + 1; i++)
-            {
-                if (start + numLength > r.Length)//in case of deviation from the string, add the remaiming to v
-                {
-                    v.Add(r.Substring(start));
-                    break;
-                }
-                if (int.TryParse(r.Substring(start, numLength), out int temp))//if nL digits from str is a number
-                {
-                    numLength++;
-                }
-                else
-                {
-                    v.Add(r.Substring(start, numLength - 1));
-                    v.Add(r[i].ToString());
-                    numLength = 1;
-                    start = i + 1;
-                }
-            }
-            Calculate(v);
-        }
-
-        //takes the logicaly orgenized list and calculates the result
-        private void Calculate(IList v)
-        {
-            for (int i = 1; i < v.Count; i++)
-            {
-                switch(v[i] as String)
-                {
-                    case "^":
-                        Set_Res(Math.Pow(int.Parse(v[i - 1] as String), int.Parse(v[i + 1] as String)).ToString());
-                        break;
-
-                    case "+":
-                        Set_Res((int.Parse(v[i - 1] as String) + int.Parse(v[i + 1] as String)).ToString());
-                        break;
-
-                    case "-":
-                        Set_Res((int.Parse(v[i - 1] as String) - int.Parse(v[i + 1] as String)).ToString());
-                        break;
-
-                    case "/":
-                        Set_Res((int.Parse(v[i - 1] as String) / int.Parse(v[i + 1] as String)).ToString());
-                        break;
-
-                    case "X":
-                        Set_Res((int.Parse(v[i - 1] as String) * int.Parse(v[i + 1] as String)).ToString());
-                        break;
-                }
-            }
-        }
+		private double CalculateBinTree(BinTree<Object> bt)
+		{
+			if(bt.IsLeave())
+				return Double.Parse(bt.Val.ToString());
+			switch(bt.Val as String)
+			{
+				case "+":
+					return CalculateBinTree(bt.Left) + CalculateBinTree(bt.Right);
+				case "-":
+					return CalculateBinTree(bt.Left) - CalculateBinTree(bt.Right);
+				case "X":
+					return CalculateBinTree(bt.Left) * CalculateBinTree(bt.Right);
+				case "/":
+					return CalculateBinTree(bt.Left) / CalculateBinTree(bt.Right);
+			}
+			return Math.Pow(CalculateBinTree(bt.Left), CalculateBinTree(bt.Right));
+		}
 
         private Double SolveEq(String eq)
         {

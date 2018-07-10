@@ -11,6 +11,7 @@ namespace Calc1
 
 		public BinTree(Object Val){
             this.Val = Val;
+			Parse();
         }
 
         public BinTree(Object Val, BinTree<Object> Right, BinTree<Object> Left)
@@ -28,6 +29,7 @@ namespace Calc1
 		//takes a leave in a tree that is an algebric expression and makes it a new valid calculation tree 
         public void Parse()
 		{
+					Console.WriteLine("parse");
             if (IsLeave())
             {
                 if(Val is String)
@@ -37,10 +39,15 @@ namespace Calc1
                 }
 				else if (Val is List<String>)
 				{
-					if((Val as List<String>).Count == 1 && Double.TryParse((Val as List<String>)[0], out double temp))
+					if((Val as List<String>).Count == 1)
 					{
-						Val = Double.Parse(( Val as List<String> )[0]);
-					}
+						if(Double.TryParse(( Val as List<String> )[0], out double temp))
+							Val = Double.Parse(( Val as List<String> )[0]);
+						else
+							FindLevel1();//this is an expression
+					} else
+						FindLevel1();
+					
 				}
 			}
         }
@@ -48,6 +55,7 @@ namespace Calc1
 		//Takes an algebric expression and sends FindLevel1() a list of all the sub-expressions that are being added/subbed
         public void Str_To_L1_List()
         {
+			Console.WriteLine("str to l1");
             String s = Val as String;
             int digits = 1;
             int start = 0;
@@ -57,6 +65,7 @@ namespace Calc1
                 if (s[i] == '+' || s[i] == '-')
                 {
                     L1_List.Add(s.Substring(start, digits));
+					L1_List.Add(s[i].ToString());
                     start = i + 1;
                     digits = 0;
                 } 
@@ -69,7 +78,6 @@ namespace Calc1
 				} 
 				else if(s[i] == ')')
 					continue;
-
 				else digits++;
             }
             L1_List.Add(s.Substring(start));
@@ -80,19 +88,19 @@ namespace Calc1
 		//takes a Level 1(+/-)-analized list and makes it a tree
 		private void FindLevel1()
 		{
+			Console.WriteLine("find l1");
 			List<String> ListVal = ( Val as List<String> );
 			if(ListVal.Count == 1)
 			{
 				Val = ListVal[0];
-				Parse();
+				Str_To_L2_List();
 				return;
 			}
 			Left = new BinTree<object>(ListVal[0]);
 			Val = ListVal[1];
 			ListVal.RemoveAt(0);
-			ListVal.RemoveAt(1);
+			ListVal.RemoveAt(0);
 			Right = new BinTree<object>(ListVal);
-			Right.FindLevel1();
 			Left.Parse();
 			Right.Parse();
 			Left.Str_To_L2_List();
@@ -100,16 +108,18 @@ namespace Calc1
 
 		public void Str_To_L2_List()
         {
-            String s = Val as String;
+			Console.WriteLine("str to l2");
+			String s = Val as String;
             int digits = 1;
             int start = 0;
             List<String> L2_List = new List<string>();
             for (int i = 1; i < s.Length; i++)
             {
-                if (s[i] == '*' || s[i] == '/')
+                if (s[i] == 'X' || s[i] == '/')
                 {
                     L2_List.Add(s.Substring(start, digits));
-                    start = i + 1;
+					L2_List.Add(s[i].ToString());
+					start = i + 1;
                     digits = 0;
                 }
                 else if (s[i] == '(')
@@ -135,23 +145,23 @@ namespace Calc1
 			if(ListVal.Count == 1)
 			{
 				Val = ListVal[0];
-				Parse();
+				Str_To_L3_List();
 				return;
 			}
 			Left = new BinTree<object>(ListVal[0]);
 			Val = ListVal[1];
 			ListVal.RemoveAt(0);
-			ListVal.RemoveAt(1);
+			ListVal.RemoveAt(0);
 			Right = new BinTree<object>(ListVal);
-			Right.FindLevel2();
 			Left.Parse();
 			Right.Parse();
 			Left.Str_To_L3_List();
 		}
 
 		public void Str_To_L3_List()
-        {
-            String s = Val as String;
+		{
+			Console.WriteLine("str to l3");
+			String s = Val as String;
             int digits = 1;
             int start = 0;
             List<String> L3_List = new List<string>();
@@ -160,7 +170,8 @@ namespace Calc1
                 if (s[i] == '^')
                 {
                     L3_List.Add(s.Substring(start, digits));
-                    start = i + 1;
+					L3_List.Add(s[i].ToString());
+					start = i + 1;
                     digits = 0;
                 }
                 else if (s[i] == '(')
@@ -192,9 +203,8 @@ namespace Calc1
 			Left = new BinTree<object>(ListVal[0]);
 			Val = ListVal[1];
 			ListVal.RemoveAt(0);
-			ListVal.RemoveAt(1);
+			ListVal.RemoveAt(0);
 			Right = new BinTree<object>(ListVal);
-			Right.FindLevel3();
 			Left.Parse();
 			Right.Parse();
 		}
