@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Xamarin.Forms;
-using Plugin.FilePicker;
-using Plugin.FilePicker.Abstractions;
 
 namespace Calc1
 {
-    public partial class MainPage : ContentPage
+	public partial class MainPage : ContentPage
     {
         public MainPage()
         {
@@ -277,7 +275,7 @@ namespace Calc1
 
         private void Pick_File()
         {
-            string contents = "X+15-2X=32-75+4X-7";
+            string contents = "X+8=22X";
             //FileData file;
             //Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             //file = await CrossFilePicker.Current.PickFile();

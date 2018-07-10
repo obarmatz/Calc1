@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace Calc1
 {
-    public partial class Cchange : ContentPage
+	public partial class Cchange : ContentPage
     {
         private double[,] GatesMat;
         private Picker from;
