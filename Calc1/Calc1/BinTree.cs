@@ -44,7 +44,10 @@ namespace Calc1
 						if(Double.TryParse(( Val as List<String> )[0], out double temp))
 							Val = Double.Parse(( Val as List<String> )[0]);
 						else
-							FindLevel1();//this is an expression
+						{
+							Val = ( Val as List<String> )[0];
+							Str_To_L1_List();//this is an expression
+						}
 					} else
 						FindLevel1();
 					
@@ -55,7 +58,6 @@ namespace Calc1
 		//Takes an algebric expression and sends FindLevel1() a list of all the sub-expressions that are being added/subbed
         public void Str_To_L1_List()
         {
-			Console.WriteLine("str to l1");
             String s = Val as String;
             int digits = 1;
             int start = 0;
@@ -72,15 +74,28 @@ namespace Calc1
 				else if(s[i] == '(')
 				{
 					int ExLength = FindLengthTillCloser(s, i);
-					L1_List.Add(s.Substring(i + 1, ExLength));
-					digits = 0;
-					i += ExLength + 1;//continue on the )
+					if(( s[i - 1] == '+' || s[i - 1] == '-' ))//Be carefull not to add a parenthesis-wraped expression too soon
+					{
+						L1_List.Add(s.Substring(i + 1, ExLength));
+						digits = 0;
+						i += ExLength;//continue on the )
+					} else
+					{
+						digits += ExLength + 2;//count the whole expression plus two parenthesis
+						i += ExLength + 1;//continue after the ')'
+					}
 				} 
 				else if(s[i] == ')')
-					continue;
+				{
+					start = i + 1;
+					digits = 0;
+				}
 				else digits++;
             }
-            L1_List.Add(s.Substring(start));
+			var add = s.Substring(start);
+			if(add.Length != 0)
+				L1_List.Add(add);
+
 			Val = L1_List;
 			FindLevel1();
         }
@@ -88,7 +103,6 @@ namespace Calc1
 		//takes a Level 1(+/-)-analized list and makes it a tree
 		private void FindLevel1()
 		{
-			Console.WriteLine("find l1");
 			List<String> ListVal = ( Val as List<String> );
 			if(ListVal.Count == 1)
 			{
@@ -108,7 +122,6 @@ namespace Calc1
 
 		public void Str_To_L2_List()
         {
-			Console.WriteLine("str to l2");
 			String s = Val as String;
             int digits = 1;
             int start = 0;
@@ -121,20 +134,31 @@ namespace Calc1
 					L2_List.Add(s[i].ToString());
 					start = i + 1;
                     digits = 0;
-                }
-                else if (s[i] == '(')
-                {
-                    int ExLength = FindLengthTillCloser(s, i);
-                    L2_List.Add(s.Substring(i+1, ExLength));
+                } else if(s[i] == '(')
+				{
+					int ExLength = FindLengthTillCloser(s, i);
+					if(( s[i - 1] == 'X' || s[i - 1] == '/' ))//Be carefull not to add a parenthesis-wraped expression too soon
+					{
+						L2_List.Add(s.Substring(i + 1, ExLength));
+						digits = 0;
+						i += ExLength;//continue on the )
+					} else
+					{
+						digits += ExLength + 2;//count the whole expression plus two parenthesis
+						i += ExLength + 1;//continue after the ')'
+					}
+				} else if(s[i] == ')')
+				{
+					start = i + 1;
 					digits = 0;
-					i += ExLength + 1;//continue on the )
-                }
-				else if(s[i] == ')')
-					continue;
+				}
 				else
 					digits++;
             }
-            L2_List.Add(s.Substring(start));
+			var add = s.Substring(start);
+			if(add.Length != 0)
+				L2_List.Add(add);
+
 			Val = L2_List;
 			FindLevel2();
 		}
@@ -160,7 +184,6 @@ namespace Calc1
 
 		public void Str_To_L3_List()
 		{
-			Console.WriteLine("str to l3");
 			String s = Val as String;
             int digits = 1;
             int start = 0;
@@ -179,14 +202,19 @@ namespace Calc1
                     int ExLength = FindLengthTillCloser(s, i);
                     L3_List.Add(s.Substring(i+1, ExLength));
 					digits = 0;
-					i += ExLength + 1;//continue on the )
+					i += ExLength;//continue on the )
                 }
 				else if(s[i] == ')')
-					continue;
-				else
+				{
+					start = i + 1;
+					digits = 0;
+				} else
 					digits++;
             }
-            L3_List.Add(s.Substring(start));
+			var add = s.Substring(start);
+			if(add.Length != 0)
+				L3_List.Add(add);
+
 			Val = L3_List;
 			FindLevel3();
 		}

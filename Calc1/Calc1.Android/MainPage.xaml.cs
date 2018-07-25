@@ -1,21 +1,13 @@
-﻿using Android;
-using Android.App;
-using Android.Content.PM;
-using Android.Runtime;
-using Android.Support.V4.App;
-using Android.Support.V4.Content;
-using Plugin.FilePicker;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Xamarin.Forms;
 
 namespace Calc1
 {
-	public partial class MainPage : ContentPage, ActivityCompat.IOnRequestPermissionsResultCallback
-	{
-		public IntPtr Handle => default(IntPtr);
-
-		public MainPage()
+	public partial class MainPage : ContentPage
+    {
+        public MainPage()
         {
             InitializeComponent();
             Set_Res("0");
@@ -27,8 +19,8 @@ namespace Calc1
 
             switch (Button_Text)
             {
-                case "Load Eq":
-                    CheckPermissions();
+                case "X=3":
+                    Pick_File();
                     break;
                 case "⇋":
                     Navigation.PushAsync(new Cchange());
@@ -69,6 +61,8 @@ namespace Calc1
                     Set_Res(Get_Res() + ".");
                     break;
                 case "=":
+					//Analize_Content(Get_Res());
+					Console.WriteLine(Get_Res());
 					Set_Res(CalculateBinTree(new BinTree<object>(Get_Res())).ToString());
                     break;
                 case "1":
@@ -129,7 +123,6 @@ namespace Calc1
 		{
 			if(bt.IsLeave())
 				return Double.Parse(bt.Val.ToString());
-
 			switch(bt.Val as String)
 			{
 				case "+":
@@ -141,7 +134,6 @@ namespace Calc1
 				case "/":
 					return CalculateBinTree(bt.Left) / CalculateBinTree(bt.Right);
 			}
-
 			return Math.Pow(CalculateBinTree(bt.Left), CalculateBinTree(bt.Right));
 		}
 
@@ -247,60 +239,29 @@ namespace Calc1
             return Ans;
         }
 
-		private void CheckPermissions()
-		{
-			Console.WriteLine("checking permission................");
-			var thisActivity = Forms.Context as Activity;
-			if(ContextCompat.CheckSelfPermission(thisActivity, Manifest.Permission.ReadExternalStorage) != Permission.Granted)
-			{// Permission is not granted
-				Console.WriteLine("per is not granted, requesting....................");
-				ActivityCompat.RequestPermissions(thisActivity, new String[] { Manifest.Permission.ReadExternalStorage }, 1);//1 is just the code to retrive this permission
-			} else
-			{//if permission is already granted
-				Console.WriteLine("per already granted~~~~~~~~~~~~~~~~~~~~");
-				Pick_File();
-			}
-		}
-
-        private async void Pick_File()
+        private void Pick_File()
         {
-			try
-			{
-				var file = await CrossFilePicker.Current.PickFile();
-				if(file == null){
-					Set_Res("Canceled");
-					return;
-				}
-				String contents = System.Text.Encoding.UTF8.GetString(file.DataArray);
+            string contents = "X+8=22X";
+            //FileData file;
+            //Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            //file = await CrossFilePicker.Current.PickFile();
+                
+            //Console.WriteLine("`````````````````````````````````````````````````````````````````````");
+            //contents = System.Text.Encoding.UTF8.GetString(file.DataArray);
+            //Console.WriteLine(contents+"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            
 
-				Console.WriteLine("File name: " + file.FileName);
-				Console.WriteLine("File contents: " + contents);
-
-				var BinAns = new BinTree<Object>(contents);
-				String ans = CalculateBinTree(BinAns).ToString();
-				Set_Res(ans);
-			} catch(Exception ex)
-			{
-				Display_File_Fault_Error_Message();
-				Console.WriteLine(ex.Source);
-			}
+            Double eqAns = 0;
+            //try
+            //{
+                eqAns = SolveEq(contents);
+            //}
+            //catch (Exception ex)
+            //{
+                //Display_File_Fault_Error_Message();
+                //Console.WriteLine(ex.Source);
+            //}
+            Set_Res(eqAns.ToString());
         }
-
-		public void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
-		{
-			if(requestCode == 1)
-			{
-				if(grantResults.Length > 0 && grantResults[0] == Permission.Granted)
-				{//permission has been granted by the user
-					Console.WriteLine("per granted, picking file.........................");
-					Pick_File();
-				} else
-				{//permission denied
-					Console.WriteLine("per denied!!!!!!!!!!!!!!!!!!!!");
-				}
-			}
-		}
-
-		public void Dispose(){}
-	}
+    }
 }
